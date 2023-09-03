@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import './App.css';
 import {marked} from 'marked'
+import Editor from './Editor';
+import Preview from './Preview';
 
-function App() {
-  let defaultText = `# Welcome to my React Markdown Previewer!
+const defaultText = `# Welcome to my React Markdown Previewer!
 
 ## This is a sub-heading...
 ### And here's some other cool stuff:
@@ -36,9 +37,9 @@ Your content can | be here, and it | can be here....
 And here. | Okay. | I think we get it.
 
 - And of course there are lists.
-  - Some are bulleted.
-     - With different indentation levels.
-        - That look like this.
+- Some are bulleted.
+- With different indentation levels.
+- That look like this.
 
 
 1. And there are numbered lists too.
@@ -47,26 +48,37 @@ And here. | Okay. | I think we get it.
 
 ![freeCodeCamp Logo](https://cdn.freecodecamp.org/testable-projects-fcc/images/fcc_secondary.svg)
 
-  `
+`
+marked.use({
+  breaks:true
+})
+
+const screenContext = createContext();
+
+function App() {
 
   const [edit, setEdit] = useState(defaultText)
-  
+  const [fullscreen, setFullscreen] = useState({
+    preview: false,
+    editor: false
+    })
+
   useEffect(() => {
-    let trans = marked.parse(edit);
-    document.getElementById("preview").innerHTML = trans
+    let preview = marked.parse(edit);
+    if(!fullscreen.editor){
+      document.getElementById("preview").innerHTML = preview
+    } 
     
-  }, [edit])
+  }, [edit, fullscreen])
 
   return (
-    <div className="App">
-      <textarea id="editor"
-        rows={15}
-        value={edit}
-        onChange={e => setEdit(e.target.value)}
-      ></textarea>
-      <div id="preview"></div>
-    </div>
+    <screenContext.Provider value={[fullscreen, setFullscreen]} className="App">
+      {!fullscreen.preview && <Editor edit={edit} setEdit={setEdit} />}
+      {!fullscreen.editor && <Preview />}
+    </screenContext.Provider>
   );
 }
+
+export {screenContext};
 
 export default App;

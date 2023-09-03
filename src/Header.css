@@ -1,0 +1,21 @@
+.header{
+    width: 100%;
+    background-color: #7149C6;
+    border-radius: .5rem .5rem 0 0;
+    padding: .6rem;
+    display: flex;
+    justify-content: space-between;
+    color: #FFF3DA;
+}
+
+.header svg {
+    position: relative;
+    top: .8rem;
+    right: .8rem;
+    cursor: pointer;
+    stroke-width: 2;
+}
+
+.header svg:hover{
+    color: black;
+}
